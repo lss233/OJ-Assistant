@@ -1,0 +1,22 @@
+.dot {
+    border-radius: 4px;
+    background: transparent;
+    border: 1px dotted;
+    margin-left: 5px;
+    color: var(--vscode-editor-foreground);
+    border-color: var(--vscode-editor-foreground);
+}
+
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 400;
+    src: local(''),
+        url('../fonts/roboto-mono-v12-latin-regular.woff2') format('woff2'),
+        url('../fonts/roboto-mono-v12-latin-regular.woff') format('woff');
+}
+
+pre,
+code {
+    font-family: 'Roboto Mono';
+}
