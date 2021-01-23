@@ -4,8 +4,9 @@ import axiosCookieJarSupport from '@3846masa/axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import * as cheerio from 'cheerio';
 import { OJ, User, Configuration, SimpleUserPasswordCredential, SourceFile, ProblemSubmit, Problem, ProblemInfo } from '../../model';
-import cheerioModule = require('cheerio');
+
 axiosCookieJarSupport(axios);
+
 const languageMap: { [index: string]: number } = {
     "c": 0,
     "cpp": 0,
@@ -13,6 +14,12 @@ const languageMap: { [index: string]: number } = {
 };
 function getLanguageId(extension: string): number {
     return languageMap[extension];
+}
+function updateProblemInfo<T extends ProblemInfo>(problemInfo: T): T {
+    if(isNaN(+problemInfo.id)) {
+        problemInfo.id = String(parseInt(problemInfo.id, 26) - 10);
+    }
+    return problemInfo;
 }
 class FJUTACMConfiguration implements Configuration {
     credentials: SimpleUserPasswordCredential;
@@ -32,6 +39,7 @@ export class FJUTACMOJ implements OJ {
     }
     async getProblem(problemInfo: ProblemInfo): Promise<Problem> {
         let response;
+        problemInfo = updateProblemInfo(problemInfo);
         if (problemInfo.contestId) {
             response = await axios.get(this.baseUrl + `/module/contestNew/ProblemViewer.jsp?cid=${problemInfo.contestId}&pid=${problemInfo.id}`, this.axiosConfig);
         } else {
@@ -71,6 +79,7 @@ export class FJUTACMOJ implements OJ {
         }
     }
     async submit(sourceFile: SourceFile): Promise<Function> {
+        sourceFile = updateProblemInfo(sourceFile);
         await axios.post(this.baseUrl + '/sb.action', qstringify({
             cid: sourceFile.contestId ?? -1,
             pid: sourceFile.id,
