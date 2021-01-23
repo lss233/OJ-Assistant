@@ -94,7 +94,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                     document.addEventListener('DOMContentLoaded', () => {
                         for (let el of document.getElementsByClassName('btn-copy')) {
                             el.addEventListener('click', e => {
-                                let i = e.getAttribute('data-id');
+                                let i = el.getAttribute('data-src');
                                 vscode.postMessage({
                                     command: 'copy',
                                     text: document.getElementById('sampleInput-' + i).textContent,
@@ -103,7 +103,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                         }
                         for (let el of document.getElementsByClassName('btn-edit')) {
                             el.addEventListener('click', e => {
-                                    let i = e.getAttribute('data-id');
+                                    let i = el.getAttribute('data-src');
                                     vscode.postMessage({
                                         command: 'edit',
                                         text: document.getElementById('sampleInput-' + i).textContent,
