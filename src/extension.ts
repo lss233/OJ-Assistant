@@ -6,7 +6,7 @@ import { DebuggerTimer } from './debugger';
 import { OJ, OJAssistConfig } from './model';
 import { ProblemInfoViewProvider } from './window';
 import { registerCommands } from './commands';
-import { parseSourceFile } from './utils';
+import { parseSourceFile, playAudio } from './utils';
 
 export * from './backend';
 

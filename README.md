@@ -1,5 +1,10 @@
 # OJ-Assistant
 
+![VSM Version](https://badgen.net/vs-marketplace/v/SparkleL.oj-assistant)
+![VSM Downloads](https://vsmarketplacebadge.apphb.com/downloads-short/SparkleL.oj-assistant.svg)
+![Deploy Workflow](https://img.shields.io/github/workflow/status/lss233/oj-assistant/Deploy%20Extension)
+![Dependabot](https://badgen.net/dependabot/lss233/oj-assistant?icon=dependabot)
+
 谁不想要一个舒适的编程环境呢？
 
 ## 特性
