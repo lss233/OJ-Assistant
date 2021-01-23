@@ -35,6 +35,11 @@
 当前版本的 OJ-Assistant 需要一些配置才能正常使用，  
 请移步至[这里](https://github.com/lss233/oj-assistant/wiki/getting-started)。
 
+# TODOs
+- [] 代码通过时播放提示音
+- [] 比赛计时
+- [] 支持更多 OJ
+
 # Issues & Contribution
 
 This project is under heavy development, every help will be appreciated.
