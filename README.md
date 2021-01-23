@@ -15,20 +15,20 @@
 * 点击样例右方的 `Copy` 按钮，可以将样例输入复制到剪贴板。
 * 点击样例右方的 `Edit` 按钮，可以直接打开测试输入文件。  
 
-![Show problem](docs/showproblem.gif)
+![Show problem](https://image.mc9y.com/2021/01/24/c507ac4215896.gif)
 
 ### 测试输入
 
 提供 `ojassist.dataFile` 命令，搭配 VSCode 的调试功能可以自动输入数据。  
 
-![Test data](docs/datafile.gif)  
+![Test data](https://image.mc9y.com/2021/01/24/5713b08795201.gif)  
 
 ### 快速交题
 
 1. 按下 `F1` 或 `Ctrl+Shift+P`, 输入 `submit` 查找 `OJ-Assist: Submit this code` 命令， 回车即可自动将代码提交到 OJ。
 2. 右下方将会提示代码的提交进度，以及评测结果。  
 
-![Submit code](docs/submit.gif)
+![Submit code](https://image.mc9y.com/2021/01/24/f2e1d56d5f36b.gif)
 
 ## 安装及使用
 
@@ -36,9 +36,9 @@
 请移步至[这里](https://github.com/lss233/oj-assistant/wiki/getting-started)。
 
 # TODOs
-- [] 代码通过时播放提示音
-- [] 比赛计时
-- [] 支持更多 OJ
+- [ ] 代码通过时播放提示音
+- [ ] 比赛计时
+- [ ] 支持更多 OJ
 
 # Issues & Contribution
 
