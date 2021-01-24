@@ -9,7 +9,7 @@ export default vscode.commands.registerTextEditorCommand('ojassist.data', async 
         return null;
     }
     vscode.workspace.openTextDocument(sourceFile.dataInputFile).then(vscode.window.showTextDocument, () => {
-        vscode.workspace.openTextDocument(vscode.Uri.parse(`untitled:${sourceFile!.dataInputFile.fsPath}`)).then(vscode.window.showTextDocument);
+        vscode.workspace.openTextDocument(sourceFile!.dataInputFile.with({ scheme: 'untitled' })).then(vscode.window.showTextDocument);
     });
     return sourceFile.dataInputFile.fsPath;
 });

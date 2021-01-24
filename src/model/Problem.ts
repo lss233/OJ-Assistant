@@ -41,12 +41,10 @@ export class SourceFile implements ProblemInfo {
     ) { }
 
     public get dataInputFile(): vscode.Uri {
-        let dataFile = vscode.workspace.getWorkspaceFolder(this.uri)!.uri.fsPath + "/data/";
 		if (this.contestId) {
-			dataFile += `${this.contestId}/${this.id}.in`;
+            return vscode.Uri.joinPath(vscode.workspace.getWorkspaceFolder(this.uri)!.uri, this.contestId, `${this.id}.in`);
 		} else {
-			dataFile += `${this.id}.in`;
+            return vscode.Uri.joinPath(vscode.workspace.getWorkspaceFolder(this.uri)!.uri, `${this.id}.in`);
         }
-        return vscode.Uri.parse(dataFile);
     }
 }

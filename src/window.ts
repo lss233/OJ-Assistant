@@ -45,7 +45,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
         };
     }
     public renderView(problemInfo: ProblemInfo): void {
-        if (this._view === undefined || (this.currentProblem !== undefined && (this.currentProblem.id === problemInfo.id && this.currentProblem.contestId === problemInfo.contestId))) { return; }
+        if (this._view === undefined || problemInfo === undefined || (this.currentProblem !== undefined && (this.currentProblem.id === problemInfo.id && this.currentProblem.contestId === problemInfo.contestId))) { return; }
         const nonce = getNonce();
         const templateHtml = `<!DOCTYPE html>
         <html>
