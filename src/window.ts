@@ -97,7 +97,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                                 let i = el.getAttribute('data-src');
                                 vscode.postMessage({
                                     command: 'copy',
-                                    text: document.getElementById('sampleInput-' + i).textContent,
+                                    text: document.getElementById('sampleInput-' + i).innerText,
                                 });
                             });
                         }
@@ -106,7 +106,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                                     let i = el.getAttribute('data-src');
                                     vscode.postMessage({
                                         command: 'edit',
-                                        text: document.getElementById('sampleInput-' + i).textContent,
+                                        text: document.getElementById('sampleInput-' + i).innerText,
                                     });
                                 });
                         }
@@ -151,7 +151,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                         <button class="dot btn-copy" data-src="${i}">Copy</button>
                         <button class="dot btn-edit" data-src="${i}">Edit</button>
                     </h2>
-                    <pre id="sampleInput-${i}">${problem.content.sampleInput[i]}</pre>
+                    <div id="sampleInput-${i}">${problem.content.sampleInput[i]}</div>
                     <h2>
                     Output#${i + 1}:
                     <!--

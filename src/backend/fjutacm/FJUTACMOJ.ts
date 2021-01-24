@@ -46,16 +46,18 @@ export class FJUTACMOJ implements OJ {
             response = await axios.get(this.baseUrl + `/Problem.jsp?pid=${problemInfo.id}`, this.axiosConfig);
         }
         let $ = cheerio.load(response.data);
+        $("div > div.col-xs-9 > div:nth-child(8) > div.panel-body").find('br').replaceWith('\n');
+        $("div > div.col-xs-9 > div:nth-child(9) > div.panel-body").find('br').replaceWith('\n');
         return new Problem(problemInfo.id, problemInfo.contestId, {
             "title": $("div > div.col-xs-9 > h1").text()!,
             "desc": $("div > div.col-xs-9 > div:nth-child(5) > div.panel-body").html()!,
             "input": $("div > div.col-xs-9 > div:nth-child(6) > div.panel-body").html()!,
             "output": $("div > div.col-xs-9 > div:nth-child(7) > div.panel-body").html()!,
             "sampleInput": [
-                $("div > div.col-xs-9 > div:nth-child(8) > div.panel-body").text()!
+                $("div > div.col-xs-9 > div:nth-child(8) > div.panel-body").html()!
             ],
             "sampleOutput": [
-                $("div > div.col-xs-9 > div:nth-child(9) > div.panel-body").text()!
+                $("div > div.col-xs-9 > div:nth-child(9) > div.panel-body").html()!
             ]
         });
 
