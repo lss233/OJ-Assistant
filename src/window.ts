@@ -201,7 +201,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                 }
             });
         }).catch(err => {
-
+            console.error(err);
         });
     }
 

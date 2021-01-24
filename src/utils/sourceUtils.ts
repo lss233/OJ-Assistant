@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { OJAssistConfig, SourceFile } from "../model";
+import * as path from 'path';
 
 export function parseSourceFile(uri: vscode.Uri, baseCfg: OJAssistConfig, code: string): SourceFile | null {
     let cfg = Object.assign({
@@ -10,7 +11,7 @@ export function parseSourceFile(uri: vscode.Uri, baseCfg: OJAssistConfig, code: 
     }, baseCfg);
 
     let matches;
-    let path = uri.fsPath;
+    let path = uri.toString(true);
     if (matches = path.match(cfg.pathParseRule.contestProblem)) {
         if (matches !== null) {
             return new SourceFile(matches[2], matches[1], matches[3], code = code, uri = uri);
