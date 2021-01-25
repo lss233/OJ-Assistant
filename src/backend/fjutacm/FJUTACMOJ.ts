@@ -22,21 +22,16 @@ function updateProblemInfo<T extends ProblemInfo>(problemInfo: T): T {
     return problemInfo;
 }
 class FJUTACMConfiguration implements Configuration {
-    credentials: SimpleUserPasswordCredential;
-    constructor(credentials: SimpleUserPasswordCredential) {
-        this.credentials = credentials;
-    }
+    [key: string] : any;
+    constructor(public credentials: SimpleUserPasswordCredential) { }
 }
 export class FJUTACMOJ implements OJ {
-    readonly baseUrl = 'http://www.fjutacm.com';
+    readonly baseUrl = this.config.baseUrl as string ?? 'http://www.fjutacm.com';
 
-    config: FJUTACMConfiguration;
     user!: FJUTACMUser;
     axiosConfig!: AxiosRequestConfig;
 
-    constructor(config: FJUTACMConfiguration) {
-        this.config = config;
-    }
+    constructor(private config: FJUTACMConfiguration) { }
     async getProblem(problemInfo: ProblemInfo): Promise<Problem> {
         let response;
         problemInfo = updateProblemInfo(problemInfo);

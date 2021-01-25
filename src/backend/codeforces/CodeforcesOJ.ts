@@ -36,21 +36,16 @@ function snakeToPascal(x: string) : string {
     return `${x.charAt(0).toUpperCase()}${x.substr(1)}`;
 }
 class CodeforcesConfiguration implements Configuration {
-    credentials: SimpleUserPasswordCredential;
-    constructor(credentials: SimpleUserPasswordCredential) {
-        this.credentials = credentials;
-    }
+    [key: string] : any;
+    constructor(public credentials: SimpleUserPasswordCredential) { }
 }
 export class CodeforcesOJ implements OJ {
-    readonly baseUrl = 'https://www.Codeforces.com';
+    readonly baseUrl = this.config.baseUrl as string ?? 'https://www.Codeforces.com';
 
-    config: CodeforcesConfiguration;
     user!: CodeforcesUser;
     axiosConfig!: AxiosRequestConfig;
 
-    constructor(config: CodeforcesConfiguration) {
-        this.config = config;
-    }
+    constructor(private config: CodeforcesConfiguration) { }
     async getProblem(problemInfo: ProblemInfo): Promise<Problem> {
         let response;
         if (problemInfo.contestId) {
