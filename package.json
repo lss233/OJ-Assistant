@@ -5,6 +5,8 @@
 	"publisher": "SparkleL",
 	"preview": true,
 	"version": "0.0.4",
+	"license": "SEE LICENSE IN LICENSE",
+	"icon": "assets/icon/512x512.png",
 	"engines": {
 		"vscode": "^1.52.0"
 	},
@@ -18,6 +20,23 @@
 	"repository": {
 		"url": "https://github.com/lss233/oj-assistant"
 	},
+	"badges": [
+		{
+			"url": "https://isitmaintained.com/badge/resolution/lss233/OJ-Assistant.svg",
+			"description": "Average time to resolve an issue",
+			"href": "https://github.com/lss233/oj-assistant/issues"
+		},
+		{
+			"url": "https://isitmaintained.com/badge/open/lss233/OJ-Assistant.svg",
+			"description": "Percentage of issues still open",
+			"href": "https://github.com/lss233/oj-assistant"
+		},
+		{
+			"url": "https://img.shields.io/github/workflow/status/lss233/oj-assistant/Deploy%20Extension",
+			"description": "Deploy Workflow",
+			"href": "https://github.com/lss233/oj-assistant"
+		}
+	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"views": {
