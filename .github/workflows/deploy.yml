@@ -1,6 +1,7 @@
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+    - 'v*'
 name: Deploy Extension
 jobs:
   deploy:
@@ -8,8 +9,33 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: yarn
-      - uses: lannonbr/vsce-action@master
+      - name: Publish to VSM
+        uses: lannonbr/vsce-action@master
         with:
           args: "publish -p $VSCE_TOKEN"
         env:
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+      - name: Package Extension
+        uses: lannonbr/vsce-action@master
+        with:
+          args: "package -o ./oj-assistant.vsix"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: true
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./oj-assistant.vsix
+          asset_name: my-artifact.zip
+          asset_content_type: application/zip
