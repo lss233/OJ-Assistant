@@ -28,28 +28,32 @@ export default vscode.commands.registerTextEditorCommand('ojassist.submit', asyn
                 increment: 30,
                 message: ` Problem#${sourceFile?.id} Waiting for judgement ...`
             });
+            try {
+                let pendingJudgement = true;
+                while (pendingJudgement) { // Polling
+                    await new Promise(resolve => setTimeout(resolve, 1000)); // Delay 1 sec.
+                    let submit = await resolver();
 
-            let pendingJudgement = true;
-            while (pendingJudgement) { // Polling
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Delay 1 sec.
-                let submit = await resolver();
+                    progress.report({
+                        increment: 1,
+                        message: ` Problem#${sourceFile?.id} Current status: ${submit.result}`
+                    });
 
-                progress.report({
-                    increment: 1,
-                    message: ` Problem#${sourceFile?.id} Current status: ${submit.result}`
-                });
+                    if (submit.result !== 'Pending...' && submit.result !== 'Judging...' && submit.result !== 'Queuing') {
 
-                if (submit.result !== 'Pending...' && submit.result !== 'Judging...' && submit.result !== 'Queuing') {
-
-                    if (!pendingJudgement) { return; }
-                    pendingJudgement = false;
-                    resolve();
-                    if (submit.result !== 'Accepted') {
-                        vscode.window.showErrorMessage(`OJ-Assistant: Problem#${sourceFile?.id} Result: ${submit.result}!`);
-                    } else {
-                        vscode.window.showInformationMessage(`OJ-Assistant: Problem#${sourceFile?.id} Result: ${submit.result}!`);
+                        if (!pendingJudgement) { return; }
+                        pendingJudgement = false;
+                        resolve();
+                        if (submit.result !== 'Accepted') {
+                            vscode.window.showErrorMessage(`OJ-Assistant: Problem#${sourceFile?.id} Result: ${submit.result}!`);
+                        } else {
+                            vscode.window.showInformationMessage(`OJ-Assistant: Problem#${sourceFile?.id} Result: ${submit.result}!`);
+                        }
                     }
                 }
+            } catch (err) {
+                resolve();
+                vscode.window.showErrorMessage(`OJ-Assistant: Problem#${sourceFile?.id} Submit Error.`, err);
             }
         });
     });

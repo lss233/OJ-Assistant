@@ -53,6 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
 		registerCommands(context);
 		console.log('OJ-Assistant: I\'m now alive.');
 
+	}, err => {
+		console.error(err, 'OJ-Assistant');
+		vscode.window.showErrorMessage(err);
 	});
 
 	// Automatically reload
