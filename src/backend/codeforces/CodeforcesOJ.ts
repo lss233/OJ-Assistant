@@ -20,15 +20,6 @@ const languageMap: { [index: string]: number } = {
 function getLanguageId(extension: string): number {
     return languageMap[extension];
 }
-function extractToken(data: string): { "csrf_token": string, ftaa: string, bfaa: string } {
-    let ftaa = data.match(/_ftaa = "(\\w+)";/),
-        bfaa = data.match(/_bfaa = "(\\w+)";/);
-    return {
-        "csrf_token": cheerio.load(data)('.csrf-token').attr('data-csrf')!,
-        "ftaa": ftaa ? ftaa[1] : '',
-        "bfaa": bfaa ? bfaa[1] : '',
-    };
-}
 function snakeToPascal(x: string) : string {
     x =  x.replace(
         /_(\w)/g,
@@ -46,10 +37,11 @@ class CodeforcesConfiguration implements Configuration {
     constructor(public credentials: SimpleUserPasswordCredential) { }
 }
 export class CodeforcesOJ implements OJ {
-    readonly baseUrl = this.config.baseUrl as string ?? 'https://www.Codeforces.com';
+    readonly baseUrl = this.config.baseUrl as string ?? 'https://codeforces.com';
 
     user!: CodeforcesUser;
     axiosConfig!: AxiosRequestConfig;
+    cookieJar!: CookieJar;
 
     constructor(private config: CodeforcesConfiguration) { }
     async getProblem(problemInfo: ProblemInfo): Promise<Problem> {
@@ -72,9 +64,9 @@ export class CodeforcesOJ implements OJ {
 
     }
     async login(): Promise<CodeforcesUser> {
-        let cookieJar = new CookieJar();
+        this.cookieJar = new CookieJar();
         this.axiosConfig = {
-            jar: cookieJar,
+            jar: this.cookieJar,
             withCredentials: true,
             headers: { "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.2704.103 Safari/537.36" }
         };
@@ -86,9 +78,9 @@ export class CodeforcesOJ implements OJ {
                 action: 'enter',
                 remember: 1,
             },
-            ...extractToken(response.data)
+            ...this.extractToken(response.data)
         }, this.axiosConfig);
-        let user = new CodeforcesUser(this.config.credentials.username, this.config.credentials.password, cookieJar);
+        let user = new CodeforcesUser(this.config.credentials.username, this.config.credentials.password, this.cookieJar);
         return this.user = user;
     }
     async submit(sourceFile: SourceFile): Promise<Function> {
@@ -104,7 +96,7 @@ export class CodeforcesOJ implements OJ {
                     sourceFile: '',
                     tabSize: 4,
                 },
-                ...extractToken(response.data)
+                ...this.extractToken(response.data)
             }, this.axiosConfig);
         } else {
             let response = await axios.get(this.baseUrl + '/problemset/submit', this.axiosConfig);
@@ -115,7 +107,7 @@ export class CodeforcesOJ implements OJ {
                     source: sourceFile.code,
                     action: 'submitSolutionFormSubmitted',
                 },
-                ...extractToken(response.data)
+                ...this.extractToken(response.data)
             }, this.axiosConfig);
         }
         
@@ -181,6 +173,40 @@ export class CodeforcesOJ implements OJ {
                 });
             };
         }
+    }
+
+    private extractToken(data: string): { "csrf_token": string, ftaa: string, bfaa: string, [key: string]: string } {
+        let ftaa = data.match(/_ftaa = "(\\w+)";/),
+            bfaa = data.match(/_bfaa = "(\\w+)";/);
+        return {
+            "csrf_token": cheerio.load(data)('.csrf-token').attr('data-csrf')!,
+            "ftaa": ftaa ? ftaa[1] : '',
+            "bfaa": bfaa ? bfaa[1] : '',
+            "_tta": this.getTTA(this.cookieJar.getCookiesSync(this.baseUrl).find(i => i.key === '39ce7')!.value) + '',
+        };
+    }
+
+    private getTTA(base: string): number {
+        let result = 0;
+        for (var i = 0; i < base.length; i++) {
+            result = (result + (i + 1) * (i + 2) * base.charCodeAt(i)) % 1009;
+            if (i % 3 === 0) {
+                result++;
+            }
+            if (i % 2 === 0) {
+                result *= 2;
+            }
+            if (i > 0) {
+                result -= Math.floor(base.charCodeAt(Math.floor(i / 2)) / 2) * (result % 5);
+            }
+            while (result < 0) {
+                result += 1009;
+            }
+            while (result >= 1009) {
+                result -= 1009;
+            }
+        }
+        return result;
     }
 
 }
