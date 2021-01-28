@@ -1,11 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { stringify as qstringify } from 'qs';
 import axiosCookieJarSupport from '@3846masa/axios-cookiejar-support';
+import * as katex from 'katex';
 import { CookieJar } from 'tough-cookie';
 import * as cheerio from 'cheerio';
 import { OJ, User, Configuration, SimpleUserPasswordCredential, SourceFile, ProblemSubmit, Problem, ProblemInfo } from '../../model';
-import cheerioModule = require('cheerio');
-import { request } from 'https';
 axiosCookieJarSupport(axios);
 const languageMap: { [index: string]: number } = {
     "c": 43,
@@ -22,10 +21,12 @@ function getLanguageId(extension: string): number {
     return languageMap[extension];
 }
 function extractToken(data: string): { "csrf_token": string, ftaa: string, bfaa: string } {
+    let ftaa = data.match(/_ftaa = "(\\w+)";/),
+        bfaa = data.match(/_bfaa = "(\\w+)";/);
     return {
         "csrf_token": cheerio.load(data)('.csrf-token').attr('data-csrf')!,
-        "ftaa": data.match(/_ftaa = "(\\w+)";/)![1],
-        "bfaa": data.match(/_bfaa = "(\\w+)";/)![1],
+        "ftaa": ftaa ? ftaa[1] : '',
+        "bfaa": bfaa ? bfaa[1] : '',
     };
 }
 function snakeToPascal(x: string) : string {
@@ -34,6 +35,11 @@ function snakeToPascal(x: string) : string {
         ($, $1) => $1.toUpperCase()
     );
     return `${x.charAt(0).toUpperCase()}${x.substr(1)}`;
+}
+function processLatex(str: string): string {
+    return str.replace(/\$\$\$\$\$\$(.+?)\$\$\$\$\$\$/gsm, ($0, $1) => katex.renderToString($1))
+        .replace(/\$\$\$(.+?)\$\$\$/gsm, ($0, $1) => katex.renderToString($1))
+        .replace(/\$\$(.+?)\$\$/gsm, ($0, $1) => katex.renderToString($1));
 }
 class CodeforcesConfiguration implements Configuration {
     [key: string] : any;
@@ -51,16 +57,16 @@ export class CodeforcesOJ implements OJ {
         if (problemInfo.contestId) {
             response = await axios.get(this.baseUrl + `/contest/${problemInfo.contestId}/problem/${problemInfo.id}`, this.axiosConfig);
         } else {
-            response = await axios.get(this.baseUrl + `/problemset/${problemInfo.id}`, this.axiosConfig);
+            response = await axios.get(this.baseUrl + `/problemset/problem/${problemInfo.id.substring(0, problemInfo.id.length - 1)}/${problemInfo.id.substr(problemInfo.id.length - 1)}`, this.axiosConfig);
         }
-        let $ = cheerio.load(response.data);
+        let $ = cheerio.load(processLatex(response.data));
         return new Problem(problemInfo.id, problemInfo.contestId, {
-            "title": $("div > div.col-xs-9 > h1").text()!,
+            "title": $(".header > .title").text()!,
             "desc": $("#pageContent > div.problemindexholder > div.ttypography > div > div:nth-child(2)").html()!,
             "input": $('#pageContent > div.problemindexholder > div.ttypography > div > div.input-specification > p').html()!,
             "output": $('#pageContent > div.problemindexholder > div.ttypography > div > div.output-specification > p').html()!,
-            "sampleInput": $("#pageContent > div.problemindexholder > div.ttypography > div > div.sample-tests > div.sample-test > div.input > pre").toArray().map(e => $(e).text())!,
-            "sampleOutput": $("#pageContent > div.problemindexholder > div.ttypography > div > div.sample-tests > div.sample-test > div.output > pre").toArray().map(e => $(e).text())!,
+            "sampleInput": $("#pageContent > div.problemindexholder > div.ttypography > div > div.sample-tests > div.sample-test > div.input > pre").toArray().map(e => '<pre>' + $(e).html()! + '</pre>')!,
+            "sampleOutput": $("#pageContent > div.problemindexholder > div.ttypography > div > div.sample-tests > div.sample-test > div.output > pre").toArray().map(e => $(e).html()!)!,
             "note": $("#pageContent > div.problemindexholder > div.ttypography > div > div.note > p").html()!
         });
 

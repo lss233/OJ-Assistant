@@ -127,6 +127,7 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                     };
                 </script>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.css" nonce="${nonce}">
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha256-tn6hZ2YGDv0w1/DaFL4MiUoXuAVclrtFZs13ch3TB9M=" crossorigin="anonymous" nonce="${nonce}">
                 <script src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/js/all.min.js" nonce="${nonce}"></script>
             </head>
             <body>{0}</body>
@@ -200,8 +201,15 @@ export class ProblemInfoViewProvider implements vscode.WebviewViewProvider {
                         break;
                 }
             });
-        }).catch(err => {
+        }).catch((err: Error) => {
             console.error(err);
+            this._view.webview.html = templateHtml.replace('{0}', `
+                <div align="center" style="font-size: 32px;">
+                    <div>
+                        ${err.message ?? 'Failed'}
+                    </div>
+                </div>
+        `);
         });
     }
 
