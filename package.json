@@ -94,7 +94,7 @@
 		"@3846masa/axios-cookiejar-support": "^1.0.1",
 		"@types/cheerio": "^0.22.24",
 		"@types/katex": "^0.11.0",
-		"@types/qs": "^6.9.5",
+		"@types/qs": "^6.9.7",
 		"@types/tough-cookie": "^4.0.0",
 		"axios": "^0.21.1",
 		"cheerio": "^1.0.0-rc.5",
